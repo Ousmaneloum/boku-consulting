@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Interoperable Payment Rails: WAEMU's Next DPI Frontier — Boku Consulting Report</title>
+<meta name="description" content="How WAEMU member states can build on existing mobile money infrastructure to create a truly interoperable regional payments ecosystem."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --bg:#fff;--bg2:#f4f7fb;--blue:#1a56db;--txt:#0f1f3d;
+    --dim:rgba(15,31,61,.68);--bdr:rgba(15,31,61,.10);
+    --fd:'Cormorant Garamond',Georgia,serif;
+    --fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:var(--fb);font-weight:300;line-height:1.75;overflow-x:hidden}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:.9rem 5vw;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr)}
+  .nav-logo{font-family:var(--fd);font-size:1.55rem;font-weight:700;letter-spacing:.06em;color:var(--txt);text-decoration:none}
+  .nav-logo span{color:var(--blue)}
+  .nav-back{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-decoration:none;display:flex;align-items:center;gap:.5rem;transition:color .2s}
+  .nav-back:hover{color:var(--blue)}
+  .paper-hero{padding:9rem 5vw 5rem;background:linear-gradient(160deg,#fff 0%,#eef4ff 60%,#deeafc 100%);border-bottom:1px solid var(--bdr);position:relative;overflow:hidden}
+  .paper-hero::after{content:'';position:absolute;right:-8%;top:-20%;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(26,86,219,.06),transparent 70%);pointer-events:none}
+  .paper-type{font-family:var(--fm);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:1.25rem;display:flex;align-items:center;gap:.6rem}
+  .paper-type::before{content:'';display:block;width:20px;height:1px;background:var(--blue)}
+  .paper-hero h1{font-family:var(--fd);font-size:clamp(2.2rem,4.5vw,4rem);font-weight:300;line-height:1.1;max-width:780px;margin-bottom:1rem}
+  .paper-hero h1 em{font-style:italic;color:var(--blue)}
+  .paper-hero p.lead{font-size:1.05rem;color:var(--dim);max-width:620px;margin-bottom:2.5rem;line-height:1.75}
+  .paper-meta{display:flex;gap:2.5rem;flex-wrap:wrap;padding-top:2rem;border-top:1px solid var(--bdr)}
+  .meta-item{display:flex;flex-direction:column;gap:.2rem}
+  .meta-label{font-family:var(--fm);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--blue)}
+  .meta-val{font-size:.85rem;color:var(--dim)}
+  .progress-banner{background:rgba(26,86,219,.06);border:1px solid rgba(26,86,219,.2);border-left:4px solid var(--blue);padding:1.25rem 2rem;margin:4rem 5vw;display:flex;align-items:flex-start;gap:1.25rem}
+  .progress-icon{font-size:1.4rem;flex-shrink:0;margin-top:.1rem}
+  .progress-title{font-family:var(--fd);font-size:1.1rem;font-weight:600;color:var(--txt);margin-bottom:.3rem}
+  .progress-desc{font-size:.84rem;color:var(--dim);line-height:1.6}
+  .paper-body{max-width:780px;margin:0 auto;padding:4rem 5vw 6rem}
+  .paper-body h2{font-family:var(--fd);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:300;margin:3rem 0 1rem;padding-top:2rem;border-top:1px solid var(--bdr)}
+  .paper-body h2:first-child{border-top:none;padding-top:0;margin-top:0}
+  .paper-body h3{font-family:var(--fd);font-size:1.25rem;font-weight:600;margin:2rem 0 .6rem}
+  .paper-body p{color:var(--dim);margin-bottom:1.25rem;font-size:.95rem}
+  .paper-body ul,.paper-body ol{margin:.75rem 0 1.25rem 1.5rem;color:var(--dim);font-size:.95rem}
+  .paper-body li{margin-bottom:.5rem;line-height:1.7}
+  .paper-body strong{color:var(--txt);font-weight:500}
+  .callout{background:var(--bg2);border-left:3px solid var(--blue);padding:1.25rem 1.5rem;margin:2rem 0}
+  .callout p{margin:0;font-size:.9rem;color:var(--dim);line-height:1.7}
+  .callout strong{color:var(--blue)}
+
+  /* Stats row */
+  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:2.5rem 0}
+  .stat-box{background:var(--bg2);border:1px solid var(--bdr);padding:1.5rem 1rem;text-align:center;border-top:3px solid var(--blue)}
+  .stat-box-num{font-family:var(--fd);font-size:2.2rem;font-weight:700;color:var(--blue);line-height:1;margin-bottom:.3rem}
+  .stat-box-label{font-size:.75rem;color:var(--dim);line-height:1.4}
+
+  /* Layer diagram */
+  .layer-diagram{border:1px solid var(--bdr);margin:2rem 0;overflow:hidden}
+  .layer{padding:1rem 1.5rem;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:1.5rem}
+  .layer:last-child{border-bottom:none}
+  .layer-num{font-family:var(--fm);font-size:.65rem;letter-spacing:.12em;color:var(--blue);flex-shrink:0;width:24px}
+  .layer-name{font-family:var(--fd);font-size:1rem;font-weight:600;color:var(--txt);min-width:160px;flex-shrink:0}
+  .layer-desc{font-size:.82rem;color:var(--dim)}
+  .layer:nth-child(odd){background:var(--bg2)}
+
+  .draft-section{background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(26,86,219,.02) 10px,rgba(26,86,219,.02) 20px);border:1px dashed rgba(26,86,219,.25);padding:2.5rem;margin:2rem 0;text-align:center}
+  .draft-section p{font-family:var(--fm);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(26,86,219,.5);margin:0}
+  .paper-cta{background:var(--bg2);border-top:1px solid var(--bdr);padding:4rem 5vw;text-align:center}
+  .paper-cta h3{font-family:var(--fd);font-size:1.8rem;font-weight:300;margin-bottom:.75rem}
+  .paper-cta p{color:var(--dim);font-size:.9rem;margin-bottom:2rem}
+  .btn-primary{display:inline-flex;align-items:center;gap:.5rem;background:var(--blue);color:#fff;padding:.85rem 2rem;font-family:var(--fb);font-size:.8rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:background .2s}
+  .btn-primary:hover{background:#2f6ae0}
+  .paper-footer{background:#f4f7fb;border-top:1px solid var(--bdr);padding:2rem 5vw;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+  .paper-footer p{font-size:.75rem;color:var(--dim)}
+  .paper-footer a{font-size:.75rem;color:var(--blue);text-decoration:none}
+  @media(max-width:680px){.stats-row{grid-template-columns:1fr 1fr}.paper-meta{gap:1.5rem}.progress-banner{flex-direction:column;gap:.75rem}.layer{flex-direction:column;align-items:flex-start;gap:.4rem}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-logo">Boku <span>Consulting</span></a>
+  <a href="../index.html#insights" class="nav-back">← Back to Insights</a>
+</nav>
+
+<div class="paper-hero">
+  <div class="paper-type">Regional Report · February 2025</div>
+  <h1>Interoperable Payment Rails:<br/><em>WAEMU's Next DPI Frontier</em></h1>
+  <p class="lead">How WAEMU member states can build on existing mobile money infrastructure to create a truly interoperable regional payments ecosystem — and why the window to act is narrowing.</p>
+  <div class="paper-meta">
+    <div class="meta-item"><span class="meta-label">Authors</span><span class="meta-val">Boku Consulting DPI Team</span></div>
+    <div class="meta-item"><span class="meta-label">Published</span><span class="meta-val">February 2025</span></div>
+    <div class="meta-item"><span class="meta-label">Reading Time</span><span class="meta-val">~15 minutes</span></div>
+    <div class="meta-item"><span class="meta-label">Status</span><span class="meta-val" style="color:var(--blue);font-weight:500">In Progress</span></div>
+  </div>
+</div>
+
+<div class="progress-banner">
+  <div class="progress-icon">📋</div>
+  <div>
+    <div class="progress-title">Document in Progress</div>
+    <div class="progress-desc">This regional report is currently being finalised with input from central bank partners across WAEMU member states. The analysis and framework sections below represent the current draft. The complete report — including country-by-country payment system assessments and a model interoperability framework — will be published in Q2 2025. <strong>Contact us to discuss regional payment strategy for your institution.</strong></div>
+  </div>
+</div>
+
+<div class="paper-body">
+
+  <h2>The State of Payments in the WAEMU Zone</h2>
+  <p>The West African Economic and Monetary Union (WAEMU) encompasses eight francophone nations sharing the CFA franc under the monetary authority of the Banque Centrale des États de l'Afrique de l'Ouest (BCEAO). Despite sharing a common currency for over 50 years, the region's payment infrastructure remains deeply fragmented — a paradox that represents both a significant economic inefficiency and an extraordinary opportunity for Digital Public Infrastructure investment.</p>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-box-num">8</div>
+      <div class="stat-box-label">WAEMU member states sharing a common currency</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-num">63%</div>
+      <div class="stat-box-label">Adult mobile money penetration across WAEMU (2024)</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-num">$2.4B</div>
+      <div class="stat-box-label">Annual cost of intra-regional payment friction (est.)</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-num">12+</div>
+      <div class="stat-box-label">Separate mobile money platforms operating without interoperability</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p><strong>The core paradox:</strong> Citizens of Sénégal and Côte d'Ivoire share a currency, a central bank, and a common economic policy — yet a merchant in Dakar cannot accept payment from a customer in Abidjan without converting through correspondent banking channels that add cost, delay, and friction that cash does not.</p>
+  </div>
+
+  <h2>Why Interoperability Has Failed So Far</h2>
+  <p>Multiple attempts at payment interoperability in the WAEMU zone have stalled or produced limited results. Understanding why is essential to designing an approach that works:</p>
+  <ul>
+    <li><strong>Commercial incentives misaligned:</strong> Mobile money operators profit from network effects — keeping users within their platform. Interoperability by definition reduces this advantage, creating rational resistance from private sector players.</li>
+    <li><strong>Regulatory fragmentation:</strong> Despite BCEAO oversight, national regulatory authorities have implemented payment regulations inconsistently, creating legal ambiguity for cross-border transactions.</li>
+    <li><strong>Technical standards divergence:</strong> Each operator has built proprietary APIs, transaction formats, and reconciliation systems — making technical integration expensive and slow.</li>
+    <li><strong>Identity layer gaps:</strong> Without a common digital identity foundation, cross-border payment authorisation requires manual KYC re-verification that breaks the user experience.</li>
+  </ul>
+
+  <h2>The DPI Approach: A Layered Architecture</h2>
+  <p>The solution is not a single unified payment platform — a model that has failed repeatedly in Africa due to procurement complexity and operator resistance. Instead, Boku Consulting advocates for a layered Digital Public Infrastructure approach that separates public goods from private competition:</p>
+
+  <div class="layer-diagram">
+    <div class="layer">
+      <span class="layer-num">L4</span>
+      <span class="layer-name">Applications</span>
+      <span class="layer-desc">Private sector wallets, merchant apps, government disbursement systems — competing on user experience</span>
+    </div>
+    <div class="layer">
+      <span class="layer-num">L3</span>
+      <span class="layer-name">Interoperability Switch</span>
+      <span class="layer-desc">A BCEAO-governed clearing and settlement layer — the "public road" that all private payment vehicles use</span>
+    </div>
+    <div class="layer">
+      <span class="layer-num">L2</span>
+      <span class="layer-name">Identity &amp; Trust</span>
+      <span class="layer-desc">Federated digital identity verification enabling cross-border KYC without repeated re-verification</span>
+    </div>
+    <div class="layer">
+      <span class="layer-num">L1</span>
+      <span class="layer-name">Legal &amp; Regulatory</span>
+      <span class="layer-desc">Harmonised BCEAO payment regulations, AML/CFT standards, and cross-border data sharing frameworks</span>
+    </div>
+  </div>
+
+  <h3>The Critical Role of Layer 3: The Interoperability Switch</h3>
+  <p>The centrepiece of a functional WAEMU payment interoperability system must be a BCEAO-governed switch — a neutral technical intermediary that routes transactions between operators, manages clearing, and performs net settlement. This model, successfully implemented in India (UPI), Tanzania (TIPS), and Ghana (GhIPSS), removes the commercial conflict from interoperability by making the rails a public good.</p>
+
+  <h2>Lessons from Comparable Implementations</h2>
+  <h3>Ghana: GhIPSS as a Model</h3>
+  <p>Ghana's interbank payment switch, operated by the Ghana Interbank Payment and Settlement Systems (GhIPSS), demonstrates that a government-owned neutral switch can achieve high adoption. The Mobile Money Interoperability (MMI) system launched in 2018 now processes over 40 million interoperability transactions monthly.</p>
+
+  <h3>Tanzania: The TIPS Model</h3>
+  <p>Tanzania's payment interoperability framework, mandated by the Bank of Tanzania, achieved full mobile money interoperability between all major operators within 18 months of regulatory mandate — demonstrating that central bank authority, when exercised decisively, can overcome commercial resistance.</p>
+
+  <div class="draft-section">
+    <p>⬡ &nbsp; Country-by-country assessments for all 8 WAEMU states, the model regulatory framework, and the BCEAO switch technical specification are currently being finalised &nbsp; ⬡</p>
+  </div>
+
+  <h2>Priority Recommendations for BCEAO and Member States</h2>
+  <ol>
+    <li>Issue a BCEAO directive mandating payment interoperability participation for all licensed mobile money operators — with a 24-month implementation timeline</li>
+    <li>Establish a WAEMU Payment Switch Authority as a subsidiary of BCEAO to govern the neutral interoperability infrastructure</li>
+    <li>Harmonise AML/CFT transaction monitoring standards across all 8 member states to remove cross-border compliance barriers</li>
+    <li>Invest in a federated digital identity layer — leveraging existing national ID infrastructure — to enable seamless cross-border KYC</li>
+    <li>Create a WAEMU API standards body to mandate common technical interfaces for all licensed payment service providers</li>
+  </ol>
+
+</div>
+
+<div class="paper-cta">
+  <h3>Advising on regional payment strategy</h3>
+  <p>Boku Consulting works with central banks, payment regulators, and fintech operators across WAEMU on interoperability frameworks, regulatory design, and DPI architecture. Get in touch to discuss your organisation's priorities.</p>
+  <a href="../index.html#contact" class="btn-primary">Start a Conversation →</a>
+</div>
+
+<footer class="paper-footer">
+  <p>© 2026 Boku Consulting. All rights reserved.</p>
+  <a href="../index.html#insights">← Back to Insights</a>
+</footer>
+
+</body>
+</html>
